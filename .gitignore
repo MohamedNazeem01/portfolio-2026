@@ -2,3 +2,7 @@ node_modules
 dist
 .env
 .DS_Store
+lighthouse-*.json
+qa_screenshots/
+test_mobile_qa.js
+

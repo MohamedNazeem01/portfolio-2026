@@ -140,26 +140,16 @@
     </nav>
 
     <!-- Mobile Navigation Drawer -->
-    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
       <div class="mobile-drawer-header font-mono">
-        <div class="mobile-status-time">
-          <span class="status-indicator-dot" aria-hidden="true"></span>
-          <span>RAK, UAE · <span id="mobileLiveTime">--:--:-- GST</span></span>
+        <div class="mobile-brand-wrap">
+          <span class="brand-monogram">MN</span>
+          <span class="mobile-brand-title">Mohamed Naseem H</span>
         </div>
-        <button class="theme-toggle-btn mobile-theme-btn" id="mobileThemeToggleBtn" aria-label="Switch to light theme" aria-pressed="false" title="Switch theme">
-          <svg class="theme-icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg class="theme-icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        <button class="mobile-close-btn" id="mobileDrawerCloseBtn" aria-label="Close Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
       </div>
@@ -174,7 +164,15 @@
         <li><a href="#contact" class="mobile-link">Contact</a></li>
       </ul>
       <div class="mobile-drawer-footer">
-        <a href="assets/cv.pdf" class="btn btn-outline" download>Download CV</a>
+        <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-primary mobile-menu-cta" aria-label="Let's Talk">
+          <span>Let's Talk</span>
+        </a>
+        <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-outline mobile-menu-wa" aria-label="WhatsApp Me">
+          <span>WhatsApp Me</span>
+        </a>
+        <a href="assets/cv.pdf" class="btn btn-outline mobile-menu-cv" download>
+          <span>Download CV</span>
+        </a>
       </div>
     </div>
   </header>
@@ -190,7 +188,7 @@
       <!-- Background: Smoke Video or Grayscale Smoke Image with Minimal Sparkle Effect -->
       <div class="hero-bg-container" id="heroBg">
         <div class="hero-smoke-float">
-          <img src="assets/smoke-bg.jpg" alt="" class="hero-fallback-img" fetchpriority="high">
+          <img src="assets/smoke-bg.jpg" alt="" class="hero-fallback-img" decoding="async" loading="lazy">
         </div>
         <!-- Minimal Starburst & Dust Sparkle Canvas -->
         <canvas id="sparkleCanvas" class="hero-sparkle-canvas" aria-hidden="true"></canvas>

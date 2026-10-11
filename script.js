@@ -311,6 +311,7 @@ const PROJECTS = [
 
   let ticking = false;
   window.addEventListener("scroll", () => {
+    if (window.innerWidth <= 1023) return;
     if (!ticking) {
       window.requestAnimationFrame(() => {
         const scrolled = window.scrollY;
@@ -329,7 +330,7 @@ const PROJECTS = [
   const follower = document.getElementById("cursorFollower");
   if (!follower) return;
 
-  if (!CONFIG.CURSOR_FOLLOWER || window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768) {
+  if (!CONFIG.CURSOR_FOLLOWER || window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 1024) {
     follower.style.display = "none";
     return;
   }
@@ -422,7 +423,7 @@ const PROJECTS = [
 
   function resize() {
     const rect = servicesSection ? servicesSection.getBoundingClientRect() : { width: window.innerWidth, height: 600 };
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.innerWidth <= 1023 ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
     width = rect.width;
     height = rect.height;
     canvas.width = width * dpr;
@@ -522,7 +523,7 @@ const PROJECTS = [
 
   function resize() {
     const rect = beyondSection ? beyondSection.getBoundingClientRect() : { width: window.innerWidth, height: 600 };
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.innerWidth <= 1023 ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
     width = rect.width;
     height = rect.height;
     canvas.width = width * dpr;
@@ -613,13 +614,14 @@ const PROJECTS = [
   let height = 0;
   let isHeroVisible = true;
 
-  const PARTICLE_COUNT = 32;
+  const isMobile = window.innerWidth <= 1023;
+  const PARTICLE_COUNT = isMobile ? 12 : 32;
   const particles = [];
 
   function resizeCanvas() {
     const heroBg = document.getElementById("heroBg");
     const rect = heroBg ? heroBg.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = window.innerWidth <= 1023 ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
 
     width = rect.width || window.innerWidth;
     height = rect.height || window.innerHeight;
@@ -849,28 +851,44 @@ const PROJECTS = [
 
   // Mobile Drawer Toggle
   if (menuToggle && mobileDrawer) {
+    const closeBtn = document.getElementById("mobileDrawerCloseBtn");
+
+    function setDrawerState(open) {
+      mobileDrawer.classList.toggle("is-open", open);
+      menuToggle.classList.toggle("is-open", open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+      mobileDrawer.setAttribute("aria-hidden", String(!open));
+      if (open) {
+        document.body.classList.add("menu-open");
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.classList.remove("menu-open");
+        document.body.style.overflow = "";
+      }
+    }
+
     menuToggle.addEventListener("click", () => {
-      const isOpen = mobileDrawer.classList.toggle("is-open");
-      menuToggle.classList.toggle("is-open", isOpen);
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-      mobileDrawer.setAttribute("aria-hidden", String(!isOpen));
+      const willOpen = !mobileDrawer.classList.contains("is-open");
+      setDrawerState(willOpen);
     });
 
-    mobileLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        mobileDrawer.classList.remove("is-open");
-        menuToggle.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        mobileDrawer.setAttribute("aria-hidden", "true");
-      });
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => setDrawerState(false));
+    }
+
+    mobileDrawer.querySelectorAll("a, button:not(.mobile-close-btn)").forEach((item) => {
+      item.addEventListener("click", () => setDrawerState(false));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && mobileDrawer.classList.contains("is-open")) {
+        setDrawerState(false);
+      }
     });
 
     document.addEventListener("click", (e) => {
-      if (!menuToggle.contains(e.target) && !mobileDrawer.contains(e.target)) {
-        mobileDrawer.classList.remove("is-open");
-        menuToggle.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        mobileDrawer.setAttribute("aria-hidden", "true");
+      if (mobileDrawer.classList.contains("is-open") && !menuToggle.contains(e.target) && !mobileDrawer.contains(e.target)) {
+        setDrawerState(false);
       }
     });
   }
