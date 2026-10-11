@@ -995,9 +995,11 @@ const PROJECTS = [
       }
 
       const systemsList = project.systems || [];
-      const tagsHtml = systemsList.slice(0, 4).map((sys) => {
-        return `<span class="chip-tag">${escapeHtml(sys)}</span>`;
-      }).join("");
+      const firstTwo = systemsList.slice(0, 2).map((sys) => `<span class="chip-tag">${escapeHtml(sys)}</span>`).join("");
+      const remainingCount = systemsList.length - 2;
+      const moreTag = remainingCount > 0 ? `<span class="chip-tag chip-tag-more">+${remainingCount}</span>` : "";
+      const extraDesktop = systemsList.slice(2, 4).map((sys) => `<span class="chip-tag chip-tag-desktop">${escapeHtml(sys)}</span>`).join("");
+      const tagsHtml = systemsList.length > 0 ? `<div class="project-tags font-mono">${firstTwo}${moreTag}${extraDesktop}</div>` : "";
 
       const scopeOneline = project.scope || project.excerpt || "";
 
@@ -1020,10 +1022,11 @@ const PROJECTS = [
               ` : ""}
             </div>
             ${scopeOneline ? `<p class="project-excerpt">${escapeHtml(scopeOneline)}</p>` : ""}
-            ${tagsHtml ? `<div class="project-tags font-mono">${tagsHtml}</div>` : ""}
+            ${tagsHtml}
             <div class="project-action-link font-mono" role="button" tabindex="0">
-              <span>INSPECT CASE STUDY</span>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <span class="project-action-desktop">INSPECT CASE STUDY</span>
+              <span class="project-action-mobile">View →</span>
+              <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
@@ -1364,36 +1367,85 @@ const PROJECTS = [
 })();
 
 // ============================================================================
-// 15. LIVE UAE TIME & REAL-TIME CLOCK
+// 15. LIVE UAE TIME & REAL-TIME CLOCK (Asia/Dubai)
 // ============================================================================
 (function initLiveUAEClock() {
-  const navClock = document.getElementById("navLiveTime");
-  const mobileClock = document.getElementById("mobileLiveTime");
+  function getClockElements() {
+    return {
+      navClock: document.getElementById("navLiveTime"),
+      mobileClock: document.getElementById("mobileLiveTime"),
+    };
+  }
 
-  function updateClock() {
+  function formatTime(now) {
+    const isDesktop = window.innerWidth >= 1024;
+    const showGst = window.innerWidth >= 430;
+
+    const options = {
+      timeZone: "Asia/Dubai",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    };
+
+    if (isDesktop) {
+      options.second = "2-digit";
+    }
+
     try {
-      const now = new Date();
-      const options = {
-        timeZone: "Asia/Dubai",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      };
-      const timeString = new Intl.DateTimeFormat("en-GB", options).format(now) + " GST";
-
-      if (navClock) navClock.textContent = timeString;
-      if (mobileClock) mobileClock.textContent = timeString;
+      const formatted = new Intl.DateTimeFormat("en-GB", options).format(now);
+      return showGst ? `${formatted} GST` : formatted;
     } catch (e) {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString() + " GST";
-      if (navClock) navClock.textContent = timeString;
-      if (mobileClock) mobileClock.textContent = timeString;
+      const hours = String(now.getUTCHours() + 4).padStart(2, "0");
+      const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+      return showGst ? `${hours}:${minutes} GST` : `${hours}:${minutes}`;
     }
   }
 
-  updateClock();
-  setInterval(updateClock, 1000);
+  function updateClock() {
+    const { navClock, mobileClock } = getClockElements();
+    if (!navClock && !mobileClock) return;
+
+    const timeStr = formatTime(new Date());
+    if (navClock) navClock.textContent = timeStr;
+    if (mobileClock) mobileClock.textContent = timeStr;
+  }
+
+  let timerId = null;
+
+  function tick() {
+    updateClock();
+    const msToNext = 1000 - (Date.now() % 1000);
+    timerId = setTimeout(tick, msToNext);
+  }
+
+  function start() {
+    if (timerId) clearTimeout(timerId);
+    tick();
+  }
+
+  function stop() {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stop();
+    } else {
+      start();
+    }
+  });
+
+  window.addEventListener("resize", updateClock);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
 })();
 
 // ============================================================================

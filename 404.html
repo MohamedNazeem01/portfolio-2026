@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mohamed Naseem H — ELV & Security Systems Professional</title>
   
   <!-- SEO & Open Graph Meta Tags -->
@@ -93,9 +93,9 @@
         <span class="brand-monogram">MN</span>
         <div class="nav-status-time font-mono" aria-hidden="true">
           <span class="status-indicator-dot"></span>
-          <span class="nav-location">RAK, UAE</span>
+          <span class="nav-location">RAK<span class="loc-full">, UAE</span></span>
           <span class="nav-time-sep">·</span>
-          <span id="navLiveTime" class="nav-live-clock">--:--:-- GST</span>
+          <span id="navLiveTime" class="nav-live-clock">--:--</span>
         </div>
       </a>
 
@@ -138,44 +138,44 @@
         </button>
       </div>
     </nav>
-
-    <!-- Mobile Navigation Drawer -->
-    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-      <div class="mobile-drawer-header font-mono">
-        <div class="mobile-brand-wrap">
-          <span class="brand-monogram">MN</span>
-          <span class="mobile-brand-title">Mohamed Naseem H</span>
-        </div>
-        <button class="mobile-close-btn" id="mobileDrawerCloseBtn" aria-label="Close Navigation Menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <ul class="mobile-nav-links">
-        <li><a href="#hero" class="mobile-link">Home</a></li>
-        <li><a href="#services" class="mobile-link">Services</a></li>
-        <li><a href="#projects" class="mobile-link">Projects</a></li>
-        <li><a href="#visual-work" class="mobile-link">Visual Work</a></li>
-        <li><a href="#beyond" class="mobile-link">Beyond Site</a></li>
-        <li><a href="#experience" class="mobile-link">Experience</a></li>
-        <li><a href="#tools" class="mobile-link">Tools</a></li>
-        <li><a href="#contact" class="mobile-link">Contact</a></li>
-      </ul>
-      <div class="mobile-drawer-footer">
-        <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-primary mobile-menu-cta" aria-label="Let's Talk">
-          <span>Let's Talk</span>
-        </a>
-        <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-outline mobile-menu-wa" aria-label="WhatsApp Me">
-          <span>WhatsApp Me</span>
-        </a>
-        <a href="assets/cv.pdf" class="btn btn-outline mobile-menu-cv" download>
-          <span>Download CV</span>
-        </a>
-      </div>
-    </div>
   </header>
+
+  <!-- Mobile Navigation Drawer (Direct Child of Body) -->
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+    <div class="mobile-drawer-header font-mono">
+      <div class="mobile-brand-wrap">
+        <span class="brand-monogram">MN</span>
+        <span class="mobile-brand-title">Mohamed Naseem H</span>
+      </div>
+      <button class="mobile-close-btn" id="mobileDrawerCloseBtn" aria-label="Close Navigation Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="#hero" class="mobile-link">Home</a></li>
+      <li><a href="#services" class="mobile-link">Services</a></li>
+      <li><a href="#projects" class="mobile-link">Projects</a></li>
+      <li><a href="#visual-work" class="mobile-link">Visual Work</a></li>
+      <li><a href="#beyond" class="mobile-link">Beyond Site</a></li>
+      <li><a href="#experience" class="mobile-link">Experience</a></li>
+      <li><a href="#tools" class="mobile-link">Tools</a></li>
+      <li><a href="#contact" class="mobile-link">Contact</a></li>
+    </ul>
+    <div class="mobile-drawer-footer">
+      <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-primary mobile-menu-cta" aria-label="Let's Talk">
+        <span>Let's Talk</span>
+      </a>
+      <a href="https://wa.me/971503196123" target="_blank" rel="noopener noreferrer" class="btn btn-outline mobile-menu-wa" aria-label="WhatsApp Me">
+        <span>WhatsApp Me</span>
+      </a>
+      <a href="assets/cv.pdf" class="btn btn-outline mobile-menu-cv" download>
+        <span>Download CV</span>
+      </a>
+    </div>
+  </div>
 
   <main id="main-content">
     <!-- =================================================================
@@ -562,12 +562,14 @@
               <div class="project-tags font-mono">
                 <span class="chip-tag">FIRE ALARM</span>
                 <span class="chip-tag">HOME AUTOMATION</span>
-                <span class="chip-tag">TESTING &amp; COMMISSIONING</span>
-                <span class="chip-tag">DOCUMENTATION</span>
+                <span class="chip-tag chip-tag-more">+2</span>
+                <span class="chip-tag chip-tag-desktop">TESTING &amp; COMMISSIONING</span>
+                <span class="chip-tag chip-tag-desktop">DOCUMENTATION</span>
               </div>
               <div class="project-action-link font-mono" role="button" tabindex="0">
-                <span>INSPECT CASE STUDY</span>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <span class="project-action-desktop">INSPECT CASE STUDY</span>
+                <span class="project-action-mobile">View →</span>
+                <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
@@ -595,13 +597,15 @@
               <div class="project-tags font-mono">
                 <span class="chip-tag">IOT ARCHITECTURE</span>
                 <span class="chip-tag">NODEMCU/ARDUINO</span>
-                <span class="chip-tag">FIREBASE</span>
-                <span class="chip-tag">BOQ SPECIFICATION</span>
-                <span class="chip-tag">REAL-TIME TELEMETRY</span>
+                <span class="chip-tag chip-tag-more">+3</span>
+                <span class="chip-tag chip-tag-desktop">FIREBASE</span>
+                <span class="chip-tag chip-tag-desktop">BOQ SPECIFICATION</span>
+                <span class="chip-tag chip-tag-desktop">REAL-TIME TELEMETRY</span>
               </div>
               <div class="project-action-link font-mono" role="button" tabindex="0">
-                <span>INSPECT PROJECT DATA</span>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <span class="project-action-desktop">INSPECT PROJECT DATA</span>
+                <span class="project-action-mobile">View →</span>
+                <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
@@ -629,12 +633,14 @@
               <div class="project-tags font-mono">
                 <span class="chip-tag">YOLOV8</span>
                 <span class="chip-tag">COMPUTER VISION</span>
-                <span class="chip-tag">SURVEILLANCE INTEGRATION</span>
-                <span class="chip-tag">MODEL OPTIMIZATION</span>
+                <span class="chip-tag chip-tag-more">+2</span>
+                <span class="chip-tag chip-tag-desktop">SURVEILLANCE INTEGRATION</span>
+                <span class="chip-tag chip-tag-desktop">MODEL OPTIMIZATION</span>
               </div>
               <div class="project-action-link font-mono" role="button" tabindex="0">
-                <span>INSPECT PROJECT DATA</span>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <span class="project-action-desktop">INSPECT PROJECT DATA</span>
+                <span class="project-action-mobile">View →</span>
+                <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
