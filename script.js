@@ -953,92 +953,197 @@ const PROJECTS = [
       .replace(/'/g, "&#039;");
   }
 
-  // Render project cards in the grid dynamically
+  let isModalActive = false;
+
+  function buildCardHtml(project, index, isClone = false) {
+    const statusText = project.status || "In progress";
+    const hasImages = Array.isArray(project.images) && project.images.length > 0;
+    const thumbnail = hasImages ? (project.thumbnail || project.images[0]) : (project.thumbnail && !project.thumbnail.includes("placeholder") ? project.thumbnail : null);
+
+    let mediaHtml = "";
+    if (thumbnail) {
+      mediaHtml = `
+        <img src="${escapeHtml(thumbnail)}" alt="${escapeHtml(project.title)}" class="project-img" loading="lazy" width="800" height="450">
+        <div class="card-status-badge font-mono">
+          <span class="card-status-dot" aria-hidden="true"></span>
+          <span>${escapeHtml(statusText)}</span>
+        </div>
+        <div class="project-overlay font-mono">
+          <span class="overlay-cta">VIEW CASE STUDY ↗</span>
+        </div>
+      `;
+    } else {
+      mediaHtml = `
+        <div class="project-media-placeholder">
+          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          <span class="placeholder-label font-mono">Photos coming soon</span>
+          <span class="placeholder-sublabel font-mono">Site Documentation in Progress</span>
+        </div>
+        <div class="card-status-badge font-mono">
+          <span class="card-status-dot" aria-hidden="true"></span>
+          <span>${escapeHtml(statusText)}</span>
+        </div>
+        <div class="project-overlay font-mono">
+          <span class="overlay-cta">VIEW CASE STUDY ↗</span>
+        </div>
+      `;
+    }
+
+    const systemsList = project.systems || [];
+    const firstTwo = systemsList.slice(0, 2).map((sys) => `<span class="chip-tag">${escapeHtml(sys)}</span>`).join("");
+    const remainingCount = systemsList.length - 2;
+    const moreTag = remainingCount > 0 ? `<span class="chip-tag chip-tag-more">+${remainingCount}</span>` : "";
+    const extraDesktop = systemsList.slice(2, 4).map((sys) => `<span class="chip-tag chip-tag-desktop">${escapeHtml(sys)}</span>`).join("");
+    const tagsHtml = systemsList.length > 0 ? `<div class="project-tags font-mono">${firstTwo}${moreTag}${extraDesktop}</div>` : "";
+
+    const scopeOneline = project.scope || project.excerpt || "";
+    const ariaAttr = isClone ? `aria-hidden="true" tabindex="-1"` : `tabindex="0" role="article" aria-label="${escapeHtml(project.title)}"`;
+
+    return `
+      <article class="project-card spotlight-card is-revealed" data-project-index="${index}" ${ariaAttr}>
+        <div class="project-media">
+          ${mediaHtml}
+        </div>
+        <div class="project-info">
+          <div class="project-header-block">
+            <h3 class="project-title">${escapeHtml(project.title)}</h3>
+            ${project.location ? `
+              <div class="project-location font-mono">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span>${escapeHtml(project.location)}</span>
+              </div>
+            ` : ""}
+          </div>
+          ${scopeOneline ? `<p class="project-excerpt">${escapeHtml(scopeOneline)}</p>` : ""}
+          ${tagsHtml}
+          <div class="project-action-link font-mono" role="button" tabindex="0">
+            <span class="project-action-desktop">INSPECT CASE STUDY</span>
+            <span class="project-action-mobile">View →</span>
+            <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  // Render project cards with seamless loop duplicates and initialize slider
   function renderGrid() {
     if (!container) return;
 
-    container.innerHTML = publishedProjects.map((project, index) => {
-      const statusText = project.status || "In progress";
-      const hasImages = Array.isArray(project.images) && project.images.length > 0;
-      const thumbnail = hasImages ? (project.thumbnail || project.images[0]) : (project.thumbnail && !project.thumbnail.includes("placeholder") ? project.thumbnail : null);
+    // Render 4 sets (1 original set + 3 clone sets with aria-hidden for seamless wide-screen loops)
+    const set0 = publishedProjects.map((p, idx) => buildCardHtml(p, idx, false)).join("");
+    const set1 = publishedProjects.map((p, idx) => buildCardHtml(p, idx, true)).join("");
+    const set2 = publishedProjects.map((p, idx) => buildCardHtml(p, idx, true)).join("");
+    const set3 = publishedProjects.map((p, idx) => buildCardHtml(p, idx, true)).join("");
 
-      let mediaHtml = "";
-      if (thumbnail) {
-        mediaHtml = `
-          <img src="${escapeHtml(thumbnail)}" alt="${escapeHtml(project.title)}" class="project-img" loading="lazy" width="800" height="450">
-          <div class="card-status-badge font-mono">
-            <span class="card-status-dot" aria-hidden="true"></span>
-            <span>${escapeHtml(statusText)}</span>
-          </div>
-          <div class="project-overlay font-mono">
-            <span class="overlay-cta">VIEW CASE STUDY ↗</span>
-          </div>
-        `;
-      } else {
-        mediaHtml = `
-          <div class="project-media-placeholder">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-            <span class="placeholder-label font-mono">Photos coming soon</span>
-            <span class="placeholder-sublabel font-mono">Site Documentation in Progress</span>
-          </div>
-          <div class="card-status-badge font-mono">
-            <span class="card-status-dot" aria-hidden="true"></span>
-            <span>${escapeHtml(statusText)}</span>
-          </div>
-          <div class="project-overlay font-mono">
-            <span class="overlay-cta">VIEW CASE STUDY ↗</span>
-          </div>
-        `;
+    container.innerHTML = set0 + set1 + set2 + set3;
+
+    setupProjectsSlider();
+  }
+
+  function setupProjectsSlider() {
+    const wrap = document.getElementById("projectsSliderWrap");
+    if (!wrap || !container) return;
+
+    let currentX = 0;
+    let isPointerDown = false;
+    let isDragging = false;
+    let startPointerX = 0;
+    let dragStartX = 0;
+    let suppressClick = false;
+    let isHovered = false;
+    let lastTime = performance.now();
+    const speed = 44; // pixels per second
+
+    wrap.addEventListener("mouseenter", () => { isHovered = true; });
+    wrap.addEventListener("mouseleave", () => { isHovered = false; });
+
+    wrap.addEventListener("pointerdown", (e) => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      isPointerDown = true;
+      isDragging = false;
+      startPointerX = e.clientX;
+      dragStartX = currentX;
+      wrap.classList.add("is-dragging");
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!isPointerDown) return;
+      const dx = e.clientX - startPointerX;
+      if (Math.abs(dx) > 6) {
+        isDragging = true;
+      }
+      currentX = dragStartX + dx;
+      normalizePosition();
+      container.style.transform = `translate3d(${currentX}px, 0, 0)`;
+    });
+
+    function handlePointerUp() {
+      if (!isPointerDown) return;
+      isPointerDown = false;
+      wrap.classList.remove("is-dragging");
+      if (isDragging) {
+        suppressClick = true;
+        setTimeout(() => {
+          suppressClick = false;
+          isDragging = false;
+        }, 120);
+      }
+    }
+
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+
+    function normalizePosition() {
+      const halfWidth = container.scrollWidth / 2;
+      if (halfWidth <= 0) return;
+      while (currentX <= -halfWidth) {
+        currentX += halfWidth;
+        dragStartX += halfWidth;
+      }
+      while (currentX > 0) {
+        currentX -= halfWidth;
+        dragStartX -= halfWidth;
+      }
+    }
+
+    function animateSlider(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!prefersReduced && !isPointerDown && !isHovered && !isModalActive) {
+        currentX -= speed * dt;
+        normalizePosition();
+        container.style.transform = `translate3d(${currentX}px, 0, 0)`;
       }
 
-      const systemsList = project.systems || [];
-      const firstTwo = systemsList.slice(0, 2).map((sys) => `<span class="chip-tag">${escapeHtml(sys)}</span>`).join("");
-      const remainingCount = systemsList.length - 2;
-      const moreTag = remainingCount > 0 ? `<span class="chip-tag chip-tag-more">+${remainingCount}</span>` : "";
-      const extraDesktop = systemsList.slice(2, 4).map((sys) => `<span class="chip-tag chip-tag-desktop">${escapeHtml(sys)}</span>`).join("");
-      const tagsHtml = systemsList.length > 0 ? `<div class="project-tags font-mono">${firstTwo}${moreTag}${extraDesktop}</div>` : "";
+      requestAnimationFrame(animateSlider);
+    }
 
-      const scopeOneline = project.scope || project.excerpt || "";
+    requestAnimationFrame(animateSlider);
 
-      return `
-        <article class="project-card spotlight-card reveal" data-project-index="${index}" tabindex="0" role="article" aria-label="${escapeHtml(project.title)}">
-          <div class="project-media">
-            ${mediaHtml}
-          </div>
-          <div class="project-info">
-            <div class="project-header-block">
-              <h3 class="project-title">${escapeHtml(project.title)}</h3>
-              ${project.location ? `
-                <div class="project-location font-mono">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  <span>${escapeHtml(project.location)}</span>
-                </div>
-              ` : ""}
-            </div>
-            ${scopeOneline ? `<p class="project-excerpt">${escapeHtml(scopeOneline)}</p>` : ""}
-            ${tagsHtml}
-            <div class="project-action-link font-mono" role="button" tabindex="0">
-              <span class="project-action-desktop">INSPECT CASE STUDY</span>
-              <span class="project-action-mobile">View →</span>
-              <svg class="project-action-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join("");
-
-    // Attach card event listeners
+    // Attach card event listeners with drag suppression
     const cards = container.querySelectorAll(".project-card");
-    cards.forEach((card, idx) => {
-      card.addEventListener("click", () => openModal(idx, card));
+    cards.forEach((card) => {
+      const idx = parseInt(card.getAttribute("data-project-index"), 10);
+      card.addEventListener("click", (e) => {
+        if (suppressClick || isDragging) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        openModal(idx, card);
+      });
+
       card.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -1046,21 +1151,6 @@ const PROJECTS = [
         }
       });
     });
-
-    // Re-observe revealed cards if observer exists
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-revealed");
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-      cards.forEach((c) => observer.observe(c));
-    } else {
-      cards.forEach((c) => c.classList.add("is-revealed"));
-    }
 
     // Attach spotlight cursor tracking to new cards
     if (CONFIG.SPOTLIGHT_CARDS && !window.matchMedia("(pointer: coarse)").matches) {
@@ -1309,6 +1399,7 @@ const PROJECTS = [
     modal.classList.add("is-active");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    isModalActive = true;
 
     if (scrollArea) scrollArea.scrollTop = 0;
 
@@ -1322,6 +1413,7 @@ const PROJECTS = [
     modal.classList.remove("is-active");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    isModalActive = false;
 
     if (activeTriggerElement && typeof activeTriggerElement.focus === "function") {
       activeTriggerElement.focus();

@@ -205,11 +205,10 @@
               <span class="badge-text font-mono">Open to ELV &amp; Technical Roles in UAE</span>
             </div>
 
-            <!-- Huge Main Name broken as "Mohamed" / "Naseem H" -->
-            <h1 class="hero-name stagger-load" style="--stagger-index: 2;">
-              <span class="name-line">Mohamed</span>
-              <span class="name-line">Naseem H</span>
-            </h1>
+            <!-- Fluid Single-Line Hero Name -->
+            <div class="hero-name-wrap stagger-load" style="--stagger-index: 2;">
+              <h1 class="hero-name">Mohamed Naseem H</h1>
+            </div>
 
             <!-- Designer & Engineer Tagline -->
             <p class="hero-tagline stagger-load" style="--stagger-index: 3;">
@@ -520,12 +519,12 @@
           <h2 class="section-title">Selected Projects</h2>
           <p class="section-subtitle">
             A curated showcase of ELV site deployments, intelligent hardware automation, and computer vision systems. Click any card to inspect full technical specs and galleries.
-          </p>
         </div>
+      </div>
 
-        <!-- Dynamic Projects Container (rendered from script.js PROJECTS data array) -->
-        <!-- Dynamic Projects Container (rendered from script.js PROJECTS data array) -->
-        <div class="projects-grid" id="projectsContainer">
+      <!-- Selected Projects Draggable Auto-Swiping Marquee Slider -->
+      <div class="projects-marquee-wrap" id="projectsSliderWrap" aria-label="Selected Projects Carousel">
+        <div class="projects-marquee-track" id="projectsContainer">
           <!-- Project 01: Cape Hayat (Real Case Study) -->
           <article class="project-card spotlight-card reveal" data-project-index="0" data-project-id="project-cape-hayat" tabindex="0" role="article" aria-label="Cape Hayat: Fire Alarm &amp; Home Automation">
             <div class="project-media">
